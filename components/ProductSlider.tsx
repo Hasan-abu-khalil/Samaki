@@ -33,7 +33,7 @@ export default function ProductSlider() {
               src={src}
               alt="Samaki Chips Product"
               width={300}
-              height={100}
+              height={300}
               className="rounded-xl drop-shadow-xl "
               priority={index === 0}
             />

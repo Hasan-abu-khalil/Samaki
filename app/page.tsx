@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -27,14 +27,48 @@ const Awards = ["شاشه", "هاتف", "أي باد", "بلايستيشن"];
 export default function Home() {
   const [step, setStep] = useState<"home" | "form">("home");
   const [selectedGovernorate, setSelectedGovernorate] = useState<string>("");
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.play().catch((err) => {
+        console.log("Autoplay failed:", err);
+        setIsPlaying(false);
+      });
+    }
+  }, []);
 
   const handleGovernorateSelect = (gov: string) => {
     setSelectedGovernorate(gov);
     setStep("form");
   };
 
+  const toggleAudio = () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
   return (
-    <main className="min-h-screen bg-gradient-to-br from-yellow-400 via-orange-400 to-red-500">
+    <main className="min-h-screen bg-gradient-to-br from-yellow-400 via-orange-400 to-red-500 relative">
+      {/* sound */}
+      <audio ref={audioRef} src="/sounds/backSound.mp3" loop />
+
+      <Button
+        onClick={toggleAudio}
+        className="fixed top-4 right-4 bg-white text-red-500 hover:bg-red-100 z-50"
+      >
+        {isPlaying ? "إيقاف الصوت 🔊" : "تشغيل الصوت 🔈"}
+      </Button>
+
       {/* HOME */}
       {step === "home" && (
         <section className="flex flex-col items-center justify-center text-center px-4 py-20 text-white">

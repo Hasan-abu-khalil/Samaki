@@ -27,17 +27,30 @@ const Awards = ["شاشه", "هاتف", "أي باد", "بلايستيشن"];
 export default function Home() {
   const [step, setStep] = useState<"home" | "form">("home");
   const [selectedGovernorate, setSelectedGovernorate] = useState<string>("");
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
+  // تشغيل الصوت عند تحميل الصفحة أو عند أول تفاعل
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.play().catch((err) => {
-        console.log("Autoplay failed:", err);
-        setIsPlaying(false);
-      });
-    }
+    const tryPlayAudio = () => {
+      if (audioRef.current) {
+        audioRef.current
+          .play()
+          .then(() => setIsPlaying(true))
+          .catch(() => setIsPlaying(false));
+      }
+      // إزالة مستمع التفاعل بعد أول نقرة
+      window.removeEventListener("click", tryPlayAudio);
+    };
+
+    // محاولة التشغيل مباشرة
+    tryPlayAudio();
+
+    // إضافة مستمع لأي نقرة لتجاوز قيود المتصفح
+    window.addEventListener("click", tryPlayAudio);
+
+    return () => window.removeEventListener("click", tryPlayAudio);
   }, []);
 
   const handleGovernorateSelect = (gov: string) => {
@@ -52,8 +65,7 @@ export default function Home() {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play();
-      setIsPlaying(true);
+      audioRef.current.play().then(() => setIsPlaying(true));
     }
   };
 
@@ -69,7 +81,7 @@ export default function Home() {
         {isPlaying ? "إيقاف الصوت 🔊" : "تشغيل الصوت 🔈"}
       </Button>
 
-      {/* HOME */}
+      {/* home  */}
       {step === "home" && (
         <section className="flex flex-col items-center justify-center text-center px-4 py-20 text-white">
           <Image
@@ -87,7 +99,6 @@ export default function Home() {
             نكهات لذيذة، جوائز قوية، وكود واحد ممكن يغيّر يومك
           </p>
 
-          {/* SLIDER */}
           <ProductSlider />
 
           <h2 className="mt-8 mb-4 text-xl font-semibold">اختر محافظتك</h2>
@@ -106,7 +117,7 @@ export default function Home() {
         </section>
       )}
 
-      {/* FORM */}
+      {/*  FORM */}
       {step === "form" && (
         <section className="flex justify-center py-16 px-4">
           <Card className="w-full max-w-md shadow-lg">

@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import ProductSlider from "@/components/ProductSlider";
 import Footer from "@/components/Footer";
+import Carousel3D from "@/components/Carousel3D";
 
 const governorates = [
   "عمان",
@@ -98,8 +99,8 @@ export default function Home() {
           <p className="mt-4 max-w-md">
             نكهات لذيذة، جوائز قوية، وكود واحد ممكن يغيّر يومك
           </p>
-
-          <ProductSlider />
+          <Carousel3D />
+          {/* <ProductSlider /> */}
 
           <h2 className="mt-8 mb-4 text-xl font-semibold">اختر محافظتك</h2>
 
